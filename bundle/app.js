@@ -1,38 +1,167 @@
-// Minimal Anna App bundle entry. Replace with real logic.
+// AI Text Summary — Anna App bundle.
+// Flow: UI -> anna.tools.invoke -> Python Executa -> reverse sampling -> Anna LLM -> UI.
 import { AnnaAppRuntime } from "/static/anna-apps/_sdk/latest/index.js";
 
 const TOOL_ID = "tool-dev-my-first-anna-app";
+const MAX_CHARS = 20000;
+// Documented range for tools.invoke is 1000–90000 ms (default 65000).
+const INVOKE_TIMEOUT_MS = 85000;
 
-async function main() {
-  const status = document.getElementById("status");
-  const btn = document.getElementById("primary-btn");
-  if (!status || !btn) return;
+const els = {
+  form: document.getElementById("summary-form"),
+  input: document.getElementById("text-input"),
+  inputError: document.getElementById("input-error"),
+  charCount: document.getElementById("char-count"),
+  button: document.getElementById("summarize-btn"),
+  buttonLabel: document.getElementById("btn-label"),
+  banner: document.getElementById("error-banner"),
+  bannerMessage: document.getElementById("error-message"),
+  resultCard: document.getElementById("result-card"),
+  output: document.getElementById("summary-output"),
+  copyBtn: document.getElementById("copy-btn"),
+  status: document.getElementById("status"),
+};
 
-  let anna;
-  try {
-    anna = await AnnaAppRuntime.connect();
-  } catch (e) {
-    status.textContent = "Standalone preview (no host).";
+let anna = null;
+let isLoading = false;
+
+function setLoading(loading) {
+  isLoading = loading;
+  els.button.disabled = loading;
+  els.input.disabled = loading;
+  els.button.classList.toggle("is-loading", loading);
+  els.button.setAttribute("aria-busy", String(loading));
+  els.buttonLabel.textContent = loading ? "Summarizing…" : "Generate Summary";
+  els.status.textContent = loading ? "Asking the AI for a summary…" : "";
+}
+
+function showInputError(message) {
+  els.inputError.textContent = message;
+  els.input.setAttribute("aria-invalid", message ? "true" : "false");
+}
+
+function showError(message) {
+  els.bannerMessage.textContent = message;
+  els.banner.hidden = false;
+}
+
+function clearError() {
+  els.banner.hidden = true;
+  els.bannerMessage.textContent = "";
+}
+
+// Generated text is always written with textContent (never innerHTML).
+function showSummary(text) {
+  els.output.textContent = text;
+  els.resultCard.hidden = false;
+  els.copyBtn.textContent = "Copy";
+}
+
+function hideSummary() {
+  els.resultCard.hidden = true;
+  els.output.textContent = "";
+}
+
+// Turn any SDK / tool failure into a short, understandable message.
+function friendlyError(err) {
+  const code = err && err.code;
+  const raw = (err && (err.details?.error || err.message)) || "";
+  switch (code) {
+    case "tool_timeout":
+      return "The summary took too long. Try a shorter text.";
+    case "agent_unavailable":
+      return "The Anna agent is not reachable. Make sure it is running, then try again.";
+    case "permission_denied":
+      return "This app is not allowed to run the summarizer. Check the app manifest.";
+    case "rate_limited":
+      return "Too many requests at once. Please wait a moment and try again.";
+    case "result_too_large":
+      return "The result was too large to display. Try a shorter text.";
+    default:
+      return raw || "The summary could not be generated. Please try again.";
+  }
+}
+
+// tools.invoke may resolve with the plugin envelope directly or wrapped in { result }.
+function extractSummary(response) {
+  if (response && response.ok === false) {
+    throw Object.assign(new Error(response.error?.message || ""), response.error || {});
+  }
+  const payload = response && response.result !== undefined ? response.result : response;
+  if (payload && payload.success === false) {
+    throw new Error(payload.error || "");
+  }
+  const summary = payload?.data?.summary ?? payload?.summary;
+  if (typeof summary !== "string" || !summary.trim()) {
+    throw new Error("The AI returned an empty summary. Please try again.");
+  }
+  return summary;
+}
+
+async function handleSubmit(event) {
+  event.preventDefault();
+  if (isLoading) return; // duplicate-submit guard
+
+  const text = els.input.value.trim();
+  clearError();
+  if (!text) {
+    showInputError("Please enter some text to summarize.");
+    els.input.focus();
+    return;
+  }
+  if (text.length > MAX_CHARS) {
+    showInputError(`Text is too long. The limit is ${MAX_CHARS.toLocaleString()} characters.`);
+    return;
+  }
+  if (!anna) {
+    showError("Not connected to Anna. Open this app through `anna-app dev` or the Anna dashboard.");
     return;
   }
 
-  await anna.window.set_title({ title: "my-first-anna-app" });
-  status.textContent = "Ready.";
+  showInputError("");
+  hideSummary();
+  setLoading(true);
+  try {
+    const response = await anna.tools.invoke({
+      tool_id: TOOL_ID,
+      method: "summarize",
+      args: { text },
+      timeoutMs: INVOKE_TIMEOUT_MS,
+    });
+    showSummary(extractSummary(response));
+  } catch (err) {
+    showError(friendlyError(err));
+  } finally {
+    setLoading(false);
+  }
+}
 
-  btn.addEventListener("click", async () => {
-    status.textContent = "Running…";
-    try {
-      const out = await anna.tools.invoke({
-        tool_id: TOOL_ID,
-        method: "ping",
-        args: {},
-      });
-      await anna.storage.set({ key: "my-first-anna-app:last", value: Date.now() });
-      status.textContent = JSON.stringify(out, null, 2);
-    } catch (e) {
-      status.textContent = "Error: " + e.message;
-    }
-  });
+async function handleCopy() {
+  try {
+    await navigator.clipboard.writeText(els.output.textContent);
+    els.copyBtn.textContent = "Copied";
+  } catch {
+    els.copyBtn.textContent = "Copy failed";
+  }
+}
+
+function updateCounter() {
+  els.charCount.textContent = els.input.value.length.toLocaleString();
+  if (els.input.value.trim()) showInputError("");
+}
+
+async function main() {
+  els.form.addEventListener("submit", handleSubmit);
+  els.input.addEventListener("input", updateCounter);
+  els.copyBtn.addEventListener("click", handleCopy);
+
+  try {
+    anna = await AnnaAppRuntime.connect();
+    await anna.window.set_title({ title: "AI Text Summary" });
+  } catch (e) {
+    anna = null;
+    els.status.textContent = "Standalone preview (no Anna host connected).";
+  }
 }
 
 main();
