@@ -5,6 +5,7 @@
       "tool_id": "tool-dev-my-first-anna-app"
     }
   ],
+  "host_capabilities": ["llm.sample"],
   "tags": ["my-first-anna-app"],
   "ui": {
     "bundle": {
@@ -17,13 +18,13 @@
         "name": "main",
         "title": "my-first-anna-app",
         "default": true,
-        "default_size": { "w": 480, "h": 360 },
-        "min_size": { "w": 320, "h": 240 }
+        "default_size": { "w": 600, "h": 640 },
+        "min_size": { "w": 320, "h": 420 }
       }
     ],
     "host_api": {
       "tools": ["tool-dev-my-first-anna-app"],
-      "storage": ["get", "set"],
+      "llm": ["complete"],
       "window": ["set_title", "ready"]
     },
     "csp_overrides": {},

@@ -2,12 +2,53 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>my-first-anna-app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Text Summary</title>
+    <meta name="description" content="Paste text and get a concise AI-generated summary." />
+    <link rel="stylesheet" href="./style.css" />
     <script src="./app.js" type="module"></script>
   </head>
   <body>
-    <h1>my-first-anna-app</h1>
-    <button id="primary-btn">Run</button>
-    <pre id="status">…</pre>
+    <main class="app">
+      <header class="app-header">
+        <h1>AI Text Summary</h1>
+        <p class="subtitle">Paste any text and get a short, clear summary powered by Anna.</p>
+      </header>
+
+      <form id="summary-form" class="card" novalidate>
+        <label for="text-input" class="label">Text to summarize</label>
+        <textarea
+          id="text-input"
+          class="textarea"
+          rows="9"
+          maxlength="20000"
+          placeholder="Paste or type your text here…"
+          aria-describedby="input-hint input-error"
+        ></textarea>
+        <div class="field-footer">
+          <span id="input-error" class="field-error" role="alert"></span>
+          <span id="input-hint" class="counter"><span id="char-count">0</span> / 20,000</span>
+        </div>
+        <button id="summarize-btn" class="btn" type="submit">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="btn-label">Generate Summary</span>
+        </button>
+      </form>
+
+      <div id="error-banner" class="banner" role="alert" hidden>
+        <strong>Something went wrong</strong>
+        <span id="error-message"></span>
+      </div>
+
+      <section id="result-card" class="card result" aria-live="polite" hidden>
+        <div class="result-header">
+          <h2>Summary</h2>
+          <button id="copy-btn" class="btn-link" type="button">Copy</button>
+        </div>
+        <p id="summary-output" class="summary-text"></p>
+      </section>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
   </body>
 </html>
