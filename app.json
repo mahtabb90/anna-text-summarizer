@@ -1,6 +1,9 @@
 {
   "name": "my-first-anna-app",
-  "tagline": "TODO",
-  "description": "TODO",
-  "category": "productivity"
+  "tagline": "Summarize long text into clear, concise takeaways with AI.",
+  "description": "Anna Text Summarizer turns longer text into clear, concise summaries using Anna's native LLM runtime. It uses a bundled Python Executa and reverse Sampling, with no direct third-party model API keys required.",
+  "category": "productivity",
+  "bundled_executas": {
+    "summarizer": { "path": "./executas/my-first-anna-app" }
+  }
 }

@@ -19,3 +19,4 @@ Thumbs.db
 .vscode/
 .idea/
 **/.anna/dev-executa.json
+bundle/anna-tool-ids.js
