@@ -1,0 +1,44 @@
+{
+  "slug": "my-first-anna-app-summarizer",
+  "name": "Anna Text Summarizer",
+  "version": "0.1.0",
+  "executa_type": "tool",
+  "description": "Summarizes text using the Anna-hosted LLM via reverse sampling.",
+  "tool_id": "tool-dev-my-first-anna-app",
+  "type": "python",
+  "distribution": {
+    "active": "binary",
+    "profiles": {
+      "local": {
+        "type": "local",
+        "supports_protocol": true
+      },
+      "binary": {
+        "type": "binary",
+        "supports_protocol": true,
+        "binary_artifacts": {
+          "darwin-arm64": {
+            "path": "dist/my-first-anna-app-summarizer-{version}-darwin-arm64.tar.gz",
+            "entrypoint": "my-first-anna-app-summarizer",
+            "format": "tar.gz"
+          },
+          "darwin-x86_64": {
+            "path": "dist/my-first-anna-app-summarizer-{version}-darwin-x86_64.tar.gz",
+            "entrypoint": "my-first-anna-app-summarizer",
+            "format": "tar.gz"
+          },
+          "linux-x86_64": {
+            "path": "dist/my-first-anna-app-summarizer-{version}-linux-x86_64.tar.gz",
+            "entrypoint": "my-first-anna-app-summarizer",
+            "format": "tar.gz"
+          },
+          "windows-x86_64": {
+            "path": "dist/my-first-anna-app-summarizer-{version}-windows-x86_64.zip",
+            "entrypoint": "my-first-anna-app-summarizer.exe",
+            "format": "zip"
+          }
+        }
+      }
+    }
+  }
+}

@@ -299,6 +299,24 @@ Errors are converted into clear user-facing messages in the interface.
 
 ---
 
+## Building the Executa Binaries
+
+The Python Executa can be packaged as a self-contained [PyInstaller](https://pyinstaller.org) `--onefile` binary for `darwin-arm64`, `darwin-x86_64`, `linux-x86_64`, and `windows-x86_64`. Package names, version, and archive formats are defined in `executas/my-first-anna-app/executa.json`.
+
+Build natively on the target platform (PyInstaller does not cross-compile):
+
+```bash
+cd executas/my-first-anna-app
+pip install pyinstaller
+python scripts/build_binary.py                       # writes dist/<archive> and dist/<archive>.sha256
+python scripts/smoke_test.py dist/<archive>          # stdio JSON-RPC protocol check
+python scripts/build_binary.py --clean               # remove build/ and dist/
+```
+
+The **Build Executa binaries** GitHub Actions workflow (manual trigger) builds and smoke-tests all four platforms and attaches the archives and SHA-256 files to a GitHub Release tagged `executa-v<version>`.
+
+---
+
 ## Project Status
 
 **Functional local implementation**
