@@ -20,3 +20,10 @@ Thumbs.db
 .idea/
 **/.anna/dev-executa.json
 bundle/anna-tool-ids.js
+
+# Executa binary packaging (generated)
+executas/*/build/
+executas/*/dist/
+*.spec
+**/.anna/executa.json
+.anna/executas.lock.json
