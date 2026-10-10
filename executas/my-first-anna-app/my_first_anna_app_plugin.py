@@ -22,7 +22,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 PROTOCOL_VERSION = "2.0"
 PLUGIN_NAME = "tool-dev-my-first-anna-app"
-PLUGIN_VERSION = "0.1.0"
+PLUGIN_VERSION = "0.1.1"
 
 # Input limits. Keep well below the host's per-invoke token cap (32 000 tokens).
 MAX_TEXT_CHARS = 20000

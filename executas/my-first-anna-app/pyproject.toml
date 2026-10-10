@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tool-dev-my-first-anna-app"
-version = "0.1.0"
+version = "0.1.1"
 description = "Executa for the my-first-anna-app Anna App"
 requires-python = ">=3.10"
 

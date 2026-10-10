@@ -27,3 +27,4 @@ executas/*/dist/
 *.spec
 **/.anna/executa.json
 .anna/executas.lock.json
+.anna/app.json
