@@ -1,7 +1,7 @@
 {
   "slug": "my-first-anna-app-summarizer",
   "name": "Anna Text Summarizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "executa_type": "tool",
   "description": "Summarizes text using the Anna-hosted LLM via reverse sampling.",
   "tool_id": "tool-dev-my-first-anna-app",

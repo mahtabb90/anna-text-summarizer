@@ -1,0 +1,26 @@
+{
+  "name": "tool-dev-my-first-anna-app",
+  "version": "0.1.1",
+  "description": "Summarizes text using the Anna-hosted LLM via reverse sampling.",
+  "host_capabilities": ["llm.sample"],
+  "tools": [
+    {
+      "name": "ping",
+      "description": "Smoke-test method.",
+      "parameters": []
+    },
+    {
+      "name": "summarize",
+      "description": "Summarize the supplied text into a short summary using the Anna LLM.",
+      "timeout": 80,
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "The text to summarize.",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
