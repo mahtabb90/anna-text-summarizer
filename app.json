@@ -1,5 +1,7 @@
 {
-  "name": "my-first-anna-app",
+  "name": "Anna Text Summarizer",
+  "slug": "anna-text-summarizer",
+  "version": "0.1.0",
   "tagline": "Summarize long text into clear, concise takeaways with AI.",
   "description": "Anna Text Summarizer turns longer text into clear, concise summaries using Anna's native LLM runtime. It uses a bundled Python Executa and reverse Sampling, with no direct third-party model API keys required.",
   "category": "productivity",
